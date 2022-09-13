@@ -1,3 +1,6 @@
+import json
+
+
 main_menu = ("1. Копирование строк из одного файла в другой\n ",
              "2. Цветы\n ",
              "3. Университет\n ",
@@ -93,7 +96,7 @@ def task2():
             for name, price in flowers_dict.items():
                 if price == min_price:
                     print(name, "->", price, "руб.")
-            print("Средняя стоимость цветов:", average_price/quantity, "руб.")
+            print("Средняя стоимость цветов:", round(average_price/quantity, 2), "руб.")
         except IOError:
             print("Ошибка в вводе-выводе!")
 
@@ -157,7 +160,34 @@ def task4():
     # [{"firm_1": 5000, "firm_2": 3000, "firm_3": 1000}, {"average_profit":
     # 2000}]
     # Подсказка: использовать менеджер контекста.
-    return
+    companies_list = []
+    with open("companies.txt", "r", encoding="utf-8") as companies:
+        try:
+            companies_dict = {}
+            profit_dict = {}
+            try:
+                average_profit = counter = 0
+                for line in companies.readlines():
+                    split_line = line.split()
+                    revenue = int(split_line[2])
+                    losses = int(split_line[3])
+                    profit = revenue - losses
+                    companies_dict.update({split_line[0]: profit})
+                    if profit > 0:
+                        average_profit += profit
+                    counter += 1
+                average_profit /= counter
+                profit_dict.update({"average_profit": average_profit})
+                companies_list = [companies_dict, profit_dict]
+                print(companies_list)
+            except ValueError:
+                print("Ошибка преобразования! Проверьте правильность заполнения файла!")
+            except IndexError:
+                print("Ошибка импорта данных из файла! Проверьте правильность заполнения файла!")
+        except IOError:
+            print("Ошибка в вводе-выводе!")
+    with open("companies.json", "w", encoding="utf-8") as companies_json:
+        json.dump(companies_list, companies_json, ensure_ascii=False)
 
 
 def menu():
