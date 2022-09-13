@@ -111,7 +111,31 @@ def task3():
     #  Физкультура: 30(пр)
     # Пример словаря: {“Информатика”: 170, “Физика”: 40, “Физкультура”:
     # 30}
-    return
+    with open("university.txt", "r", encoding="utf-8") as studies:
+        try:
+            studies_dict = {}
+            try:
+                for line in studies.readlines():
+                    split_line_to_lessons = line.split(sep=":")
+                    digits = ""
+                    hours = 0
+                    flag_is_digit = False
+                    for symbol in split_line_to_lessons[1]:
+                        if symbol.isdigit():
+                            digits += symbol
+                            flag_is_digit = True
+                        elif flag_is_digit is True:
+                            hours += (int(digits))
+                            digits = ""
+                            flag_is_digit = False
+                    studies_dict.update({split_line_to_lessons[0]: hours})
+            except ValueError:
+                print("Ошибка преобразования! Проверьте правильность заполнения файла!")
+            except IndexError:
+                print("Ошибка импорта данных из файла! Проверьте правильность заполнения файла!")
+            print("Все предметы:", studies_dict, sep="\n")
+        except IOError:
+            print("Ошибка в вводе-выводе!")
 
 
 def task4():
